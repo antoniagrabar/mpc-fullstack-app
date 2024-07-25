@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { analystURL } from "@/constants";
+import { attacks, months } from "@/constants";
 
 const cellSchema = z.preprocess(
   (val) => Number(val),
@@ -54,60 +55,35 @@ const DataEntryForm = () => {
     try {
       const response = await fetch(`${analystURL}/publicKey`);
       if (!response.ok) {
-        throw new Error("Network response was not ok" + response.statusText);
+        throw new Error(response.statusText);
       }
-      // Parse the JSON response to get the public key
       const data = await response.json();
       console.log(data);
       const publicKey = data.publicKey;
-
-      // Log the public key or use it as needed
       console.log("Public Key:", publicKey);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const rowLabels = [
-    "Malware",
-    "Phishing",
-    "Spoofing",
-    "DDoS",
-    "Insider Threats",
-    "MiTM",
-    "Code Injection",
-    "Supply Chain",
-    "DNS Tunneling",
-    "Brute force",
-  ];
-
   return (
-    <div>
+    <>
       <div className="flex mb-5">
         <span className="body-semibold w-[150px]">Attack</span>
         <div className="flex w-full place-content-between pr-6">
-          <span className="body-semibold">Jan</span>
-          <span className="body-semibold">Feb</span>
-          <span className="body-semibold">Mar</span>
-          <span className="body-semibold">Apr</span>
-          <span className="body-semibold">May</span>
-          <span className="body-semibold">Jun</span>
-          <span className="body-semibold">Jul</span>
-          <span className="body-semibold">Aug</span>
-          <span className="body-semibold">Sep</span>
-          <span className="body-semibold">Oct</span>
-          <span className="body-semibold">Nov</span>
-          <span className="body-semibold">Dec</span>
+          {months.map((month: string) => (
+            <span className="body-semibold">{month}</span>
+          ))}
         </div>
       </div>
-      <div className="">
+      <div>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
             <div className="grid grid-cols-13 gap-2 mb-14">
               {watch("table").map((row, rowIndex) => (
                 <div key={rowIndex} className="flex">
                   <div className="flex pr-2 flex-none w-[110px] body-regular pt-2">
-                    {rowLabels[rowIndex]}
+                    {attacks[rowIndex]}
                   </div>
                   {row.map((_, cellIndex) => (
                     <FormField
@@ -142,7 +118,7 @@ const DataEntryForm = () => {
           </form>
         </Form>
       </div>
-    </div>
+    </>
   );
 };
 

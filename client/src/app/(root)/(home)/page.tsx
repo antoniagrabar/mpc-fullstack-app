@@ -1,36 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { isUserAuthorized } from "@/utils/auth";
-
-export default function Page() {
-  const [user, setUser] = useState<{ name: string; email: string }>({
-    name: "",
-    email: "",
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkAuthorization = async () => {
-      const isAuthorized = await isUserAuthorized();
-
-      if (isAuthorized.auth) {
-        setUser({
-          name: isAuthorized.data.name,
-          email: isAuthorized.data.email,
-        });
-      } else {
-        router.push("/sign-in");
-      }
-    };
-    checkAuthorization();
-  }, []);
-
+const Page = () => {
   return (
     <div>
-      <h2 className="h2-bold mb-8">Welcome, {user.name}!</h2>
+      <h2 className="h2-bold mb-8">Welcome!</h2>
       <p className="text-gray300 paragraph-regular">
         Thank you for deciding to join this research, where we aim to find
         correlations between cyberattacks and time periods to enhance our
@@ -87,14 +58,11 @@ export default function Page() {
           <p className="text-gray300 paragraph-regular pb-3">
             {" "}
             2)
-            <span className="paragraph-bold pl-2">
-              Fill in the table:{" "}
-            </span>{" "}
+            <span className="paragraph-bold pl-2">Fill in the table: </span>
             Enter the number of incidents for each attack type for each of the
             past 12 months in the provided table.
           </p>
           <p className="text-gray300 paragraph-regular">
-            {" "}
             3)
             <span className="paragraph-bold pl-2">Submit data: </span> Once all
             fields are filled, click the &quot;Submit&quot; button.
@@ -103,4 +71,6 @@ export default function Page() {
       </div>
     </div>
   );
-}
+};
+
+export default Page;
