@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { baseURL } from "@/constants";
+import { serviceProviderURL } from "@/constants";
 import { useRouter } from "next/navigation";
 import { setAuthentication } from "@/utils/auth";
 import { useState } from "react";
@@ -42,7 +42,7 @@ const SignInForm = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch(`${baseURL}/signin`, {
+      const response = await fetch(`${serviceProviderURL}/signin`, {
         method: "POST",
         body: JSON.stringify(values),
         headers: {

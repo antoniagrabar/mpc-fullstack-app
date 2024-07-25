@@ -1,6 +1,7 @@
 import { SidebarLink } from "../types/index";
 
-export const baseURL = "http://localhost:5000/api";
+export const serviceProviderURL = "http://localhost:5000/api";
+export const analystURL = "http://localhost:5001/api";
 
 export const sidebarLinks: SidebarLink[] = [
   {

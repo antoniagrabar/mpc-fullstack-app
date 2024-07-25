@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { baseURL } from "@/constants";
+import { serviceProviderURL } from "@/constants";
 
 export const setCookie = (name: string, value: string) => {
   Cookies.set(name, value, { expires: 1 });
@@ -29,7 +29,7 @@ export const isUserAuthorized = async () => {
 
   if (token) {
     try {
-      const response = await fetch(`${baseURL}/auth`, {
+      const response = await fetch(`${serviceProviderURL}/auth`, {
         method: "POST",
         body: JSON.stringify(tokenObject),
         headers: {

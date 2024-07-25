@@ -1,9 +1,8 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-const User = require("../models/User");
-
-module.exports = async (req, res) => {
+export const signInController = async (req, res) => {
   if (req.body !== undefined) {
     const { email, password } = req.body;
     const dbUser = await User.findOne({ email }).exec();

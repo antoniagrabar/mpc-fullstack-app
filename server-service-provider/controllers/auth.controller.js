@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-module.exports = (req, res) => {
+export const authController = (req, res) => {
   const { token } = req.body;
 
   if (token) {

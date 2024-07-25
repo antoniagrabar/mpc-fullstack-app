@@ -1,6 +1,6 @@
-const bcrypt = require("bcrypt");
-const { isEmail } = require("validator");
-const User = require("../models/User");
+import bcrypt from "bcrypt";
+import isEmail from "validator/lib/isEmail.js";
+import User from "../models/User.js";
 
 const saltRounds = 10;
 
@@ -37,7 +37,7 @@ const validateSignUpData = async (req, res) => {
   return true;
 };
 
-module.exports = async (req, res) => {
+export const signUpController = async (req, res) => {
   if (req.body !== undefined) {
     const { name, email, password } = req.body;
 

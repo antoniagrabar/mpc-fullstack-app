@@ -1,9 +1,11 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const mongoose = require("mongoose");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import publicKeyRouter from "./routes/publicKey.route.js";
 
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 
@@ -22,13 +24,15 @@ app.use(
   })
 );
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5001;
 
 try {
   mongoose.connect(process.env.MONGO_URI);
-  console.log("connected to mongo from server analyst");
+  console.log("connected to mongo from analyst");
 } catch (error) {
   console.log(error);
 }
+
+app.use("/api/", publicKeyRouter);
 
 app.listen(PORT);

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { baseURL } from "@/constants";
+import { serviceProviderURL } from "@/constants";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -46,7 +46,7 @@ const SignUpForm = ({ setSignUpSuccess }: any) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch(`${baseURL}/signup`, {
+      const response = await fetch(`${serviceProviderURL}/signup`, {
         method: "POST",
         body: JSON.stringify(values),
         headers: {

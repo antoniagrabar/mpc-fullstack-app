@@ -1,11 +1,11 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const mongoose = require("mongoose");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import authRouter from "./routes/auth.route.js";
 
-const routes = require("./routes/authRoutes");
-
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(
   })
 );
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 try {
   mongoose.connect(process.env.MONGO_URI);
@@ -33,6 +33,6 @@ try {
   console.log(error);
 }
 
-app.use("/api", routes);
+app.use("/api/auth", authRouter);
 
 app.listen(PORT);

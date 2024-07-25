@@ -9,10 +9,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { analystURL } from "@/constants";
 
 const cellSchema = z.preprocess(
   (val) => Number(val),
@@ -48,8 +48,24 @@ const DataEntryForm = () => {
 
   const { control, watch, handleSubmit } = form;
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+
+    try {
+      const response = await fetch(`${analystURL}/publicKey`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok" + response.statusText);
+      }
+      // Parse the JSON response to get the public key
+      const data = await response.json();
+      console.log(data);
+      const publicKey = data.publicKey;
+
+      // Log the public key or use it as needed
+      console.log("Public Key:", publicKey);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const rowLabels = [
