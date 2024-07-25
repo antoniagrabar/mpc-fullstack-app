@@ -117,7 +117,7 @@ const SignUpForm = ({ setSignUpSuccess }: any) => {
           <></>
         )}
         <Button className="w-full" type="submit">
-          {"Submit"}
+          Submit
         </Button>
         <Link href="/sign-in">
           <Button className="w-full" variant={"link"}>

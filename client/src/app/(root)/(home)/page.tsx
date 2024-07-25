@@ -41,7 +41,7 @@ export default function Page() {
       <div className="pt-8">
         <h3 className="h3-semibold mb-3">What to Submit</h3>
         <p className="text-gray300 paragraph-regular">
-          We request information on the 15 most common cyber attacks your
+          We request information on the 10 most common cyber attacks your
           organization has faced over the past 12 months. For each attack type,
           you will need to provide the number of incidents for each month over
           the past 12 months.

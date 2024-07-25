@@ -1,5 +1,11 @@
+import DataEntryForm from "@/components/forms/DataEntryForm";
+
 const Page = () => {
-  return <div>Page</div>;
+  return (
+    <div>
+      <DataEntryForm />
+    </div>
+  );
 };
 
 export default Page;
