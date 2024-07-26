@@ -15,7 +15,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     logout();
-    router.push("/sign-in");
+    router.push("/login");
   };
 
   return (

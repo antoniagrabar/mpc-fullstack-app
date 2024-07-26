@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { serviceProviderURL } from "@/constants";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -46,13 +45,16 @@ const SignUpForm = ({ setSignUpSuccess }: any) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch(`${serviceProviderURL}/signup`, {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/register`,
+        {
+          method: "POST",
+          body: JSON.stringify(values),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
       const json = await response.json();
       if (!response.ok) {
         setEmailExistsMessage(json.message);
@@ -119,7 +121,7 @@ const SignUpForm = ({ setSignUpSuccess }: any) => {
         <Button className="w-full" type="submit">
           Submit
         </Button>
-        <Link href="/sign-in">
+        <Link href="/login">
           <Button className="w-full" variant={"link"}>
             Already have an account? Log in here
           </Button>

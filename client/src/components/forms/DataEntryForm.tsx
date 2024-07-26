@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { analystURL } from "@/constants";
 import { attacks, months } from "@/constants";
 
 const cellSchema = z.preprocess(
@@ -53,7 +52,7 @@ const DataEntryForm = () => {
     console.log(values);
 
     try {
-      const response = await fetch(`${analystURL}/publicKey`);
+      const response = await fetch(`${process.env.ANALYSTURL}/publicKey`);
       if (!response.ok) {
         throw new Error(response.statusText);
       }

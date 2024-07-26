@@ -14,7 +14,7 @@ const SignUpSuccess = () => {
         className="mb-4"
       />
       <h3 className="h3-bold">Registration completed successfully.</h3>
-      <Link href="/sign-in">
+      <Link href="/login">
         <Button className="mt-4">Login</Button>
       </Link>
     </>

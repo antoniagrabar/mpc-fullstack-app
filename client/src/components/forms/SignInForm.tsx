@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { serviceProviderURL } from "@/constants";
 import { useRouter } from "next/navigation";
 import { setAuthentication } from "@/utils/auth";
 import { useState } from "react";
@@ -42,13 +41,16 @@ const SignInForm = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch(`${serviceProviderURL}/signin`, {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/login`,
+        {
+          method: "POST",
+          body: JSON.stringify(values),
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
       const json = await response.json();
       if (!response.ok) {
         setErrorMessage(json.message);
@@ -62,50 +64,57 @@ const SignInForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-300">
-        <h1 className="h1-bold flex-center">Log in</h1>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2 w-300"
+        >
+          <h1 className="h1-bold flex-center">Log in</h1>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{"Password"}</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {errorMessage !== "" ? (
+            <p className="text-sm font-medium text-destructive">
+              {errorMessage}
+            </p>
+          ) : (
+            <></>
           )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{"Password"}</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {errorMessage !== "" ? (
-          <p className="text-sm font-medium text-destructive">{errorMessage}</p>
-        ) : (
-          <></>
-        )}
-        <Button className="w-full" type="submit">
-          Submit
-        </Button>
-        <Link href="/sign-up">
-          <Button className="w-full" variant={"link"}>
-            Don&apos;t have an account? Register here
+          <Button className="w-full" type="submit">
+            Submit
           </Button>
-        </Link>
-      </form>
-    </Form>
+          <Link href="/register">
+            <Button className="w-full" variant={"link"}>
+              Don&apos;t have an account? Register here
+            </Button>
+          </Link>
+        </form>
+      </Form>
+    </>
   );
 };
 

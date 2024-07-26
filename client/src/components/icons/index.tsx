@@ -26,9 +26,9 @@ export default function Icon({
       xmlns="http://www.w3.org/2000/svg"
       className={className ?? className}
       stroke={stroke ? stroke : "#000"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <IconPath name={name} />
     </svg>

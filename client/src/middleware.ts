@@ -1,44 +1,57 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { isUserAuthorized } from "@/utils/auth";
+import { type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  const { pathname } = url;
-
-  const PUBLIC_PATHS = ["/sign-in", "/sign-up"];
-
-  if (PUBLIC_PATHS.includes(pathname)) {
-    return NextResponse.next();
-  }
-
-  const token = request.cookies.get("token");
+const isUserAuthorized = async (token: any) => {
+  const tokenObject = {
+    token: token,
+  };
 
   if (token) {
     try {
-      const isAuthorized = await isUserAuthorized();
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/checkAuth`,
+        {
+          method: "POST",
+          body: JSON.stringify(tokenObject),
+          headers: {
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
 
-      if (isAuthorized.auth) {
-        return NextResponse.next();
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
       }
+      const json = await response.json();
+      return json;
     } catch (error) {
-      console.error("Error during authentication check:", error);
+      console.log(error);
     }
+  } else {
+    console.log("There is no token.");
   }
 
-  url.pathname = "/sign-in";
-  return NextResponse.redirect(url);
+  return false;
+};
+
+export async function middleware(request: NextRequest) {
+  try {
+    const token = request.cookies.get("token")?.value;
+
+    const isAuthorized = await isUserAuthorized(token);
+
+    if (isAuthorized.auth && !request.nextUrl.pathname.startsWith("/")) {
+      return Response.redirect(new URL("/", request.url));
+    }
+    if (!isAuthorized && !request.nextUrl.pathname.startsWith("/login")) {
+      return Response.redirect(new URL("/login", request.url));
+    }
+  } catch (error) {
+    console.error("Error during authentication check:", error);
+    return Response.redirect(new URL("/login", request.url));
+  }
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };
