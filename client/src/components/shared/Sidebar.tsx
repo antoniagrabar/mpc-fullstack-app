@@ -4,19 +4,11 @@ import { sidebarLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "../icons";
-import { logout } from "@/utils/auth";
-import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import Image from "next/image";
 
 const Sidebar = () => {
-  const router = useRouter();
   const pathname = usePathname();
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
 
   return (
     <section className="light-border sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-6 w-[266px]">
@@ -33,8 +25,6 @@ const Sidebar = () => {
           const isActive =
             (pathname.includes(item.route) && item.route.length > 1) ||
             pathname === item.route;
-
-          console.log("isactive", isActive);
 
           return (
             <Link
@@ -63,13 +53,11 @@ const Sidebar = () => {
           );
         })}
       </div>
-
-      <Button
-        onClick={handleLogout}
-        className="w-full rounded-lg px-4 py-3 shadow-none text-theme bg-gray100 hover:bg-gray200 focus:bg-gray200 cursor-pointer"
-      >
-        Log Out
-      </Button>
+      <Link href="/logout">
+        <Button className="w-full rounded-lg px-4 py-3 shadow-none text-theme bg-gray100 hover:bg-gray200 focus:bg-gray200 cursor-pointer">
+          Log Out
+        </Button>
+      </Link>
     </section>
   );
 };

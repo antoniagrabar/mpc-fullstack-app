@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { attacks, months } from "@/constants";
+import { useEffect, useState } from "react";
+import { encryptMask, generateRandomMask } from "@/utils/helpers";
 
 const cellSchema = z.preprocess(
   (val) => Number(val),
@@ -26,20 +28,49 @@ const cellSchema = z.preprocess(
 
 const rowSchema = z
   .array(cellSchema)
-  .length(12, { message: "Row must have exactly 13 cells" });
+  .length(12, { message: "Row must have exactly 12 cells" });
 
 const tableSchema = z
   .array(rowSchema)
-  .length(10, { message: "Table must have exactly 11 rows" });
+  .length(10, { message: "Table must have exactly 10 rows" });
 
 const formSchema = z.object({
-  table: tableSchema,
+  data: tableSchema,
 });
 
 const DataEntryForm = () => {
+  const [publicKey, setPublicKey] = useState<string>("");
+
+  useEffect(() => {
+    const fetchPublicKey = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_ANALYST_URL}/public-key`,
+          {
+            method: "GET",
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        const responseData = await response.json();
+        const fetchedPublicKey = responseData.publicKey;
+        setPublicKey(fetchedPublicKey);
+      } catch (error) {
+        console.error("Error fetching public key:", error);
+      }
+    };
+
+    fetchPublicKey();
+  }, []);
+
   const form = useForm({
     defaultValues: {
-      table: Array.from({ length: 10 }, () =>
+      data: Array.from({ length: 10 }, () =>
         Array.from({ length: 12 }, () => 0)
       ),
     },
@@ -49,19 +80,56 @@ const DataEntryForm = () => {
   const { control, watch, handleSubmit } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const mask = generateRandomMask();
+    const encryptedMask = encryptMask(mask, publicKey);
+
+    const maskedValues = values.data.map((row) =>
+      row.map((cell: number) => cell + mask)
+    );
 
     try {
-      const response = await fetch(`${process.env.ANALYSTURL}/publicKey`);
+      const dataObject = {
+        userId: "a",
+        data: maskedValues,
+      };
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/masked-data`,
+        {
+          method: "POST",
+          body: JSON.stringify(dataObject),
+          headers: {
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+
+      const json = await response.json();
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw new Error(json.message);
+      } else {
+        console.log("Data submitted successfully!");
       }
-      const data = await response.json();
-      console.log(data);
-      const publicKey = data.publicKey;
-      console.log("Public Key:", publicKey);
+
+      const dataObjectAnalyst = {
+        userId: "a",
+        encryptedMask: encryptedMask,
+      };
+
+      const analystResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_ANALYST_URL}/encrypted-mask`,
+        {
+          method: "POST",
+          body: JSON.stringify(dataObjectAnalyst),
+          headers: {
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -79,7 +147,7 @@ const DataEntryForm = () => {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
             <div className="grid grid-cols-13 gap-2 mb-14">
-              {watch("table").map((row, rowIndex) => (
+              {watch("data").map((row, rowIndex) => (
                 <div key={rowIndex} className="flex">
                   <div className="flex pr-2 flex-none w-[110px] body-regular pt-2">
                     {attacks[rowIndex]}
@@ -88,7 +156,7 @@ const DataEntryForm = () => {
                     <FormField
                       key={`${rowIndex}-${cellIndex}`}
                       control={control}
-                      name={`table.${rowIndex}.${cellIndex}`}
+                      name={`data.${rowIndex}.${cellIndex}`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>

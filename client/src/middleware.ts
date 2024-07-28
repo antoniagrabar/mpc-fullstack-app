@@ -1,4 +1,4 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const isUserAuthorized = async (token: any) => {
   const tokenObject = {
@@ -35,21 +35,25 @@ const isUserAuthorized = async (token: any) => {
 };
 
 export async function middleware(request: NextRequest) {
-  try {
-    const token = request.cookies.get("token")?.value;
-
-    const isAuthorized = await isUserAuthorized(token);
-
-    if (isAuthorized.auth && !request.nextUrl.pathname.startsWith("/")) {
-      return Response.redirect(new URL("/", request.url));
-    }
-    if (!isAuthorized && !request.nextUrl.pathname.startsWith("/login")) {
-      return Response.redirect(new URL("/login", request.url));
-    }
-  } catch (error) {
-    console.error("Error during authentication check:", error);
-    return Response.redirect(new URL("/login", request.url));
-  }
+  // try {
+  //   const token = request.cookies.get("token")?.value;
+  //   if (request.nextUrl.pathname === "/logout") {
+  //     const response = NextResponse.redirect(new URL("/login", request.url));
+  //     response.cookies.delete("token");
+  //     console.log("Response cookies: ", response.cookies.getAll());
+  //     return response;
+  //   }
+  //   const isAuthorized = await isUserAuthorized(token);
+  //   if (isAuthorized.auth && !request.nextUrl.pathname.startsWith("/")) {
+  //     return Response.redirect(new URL("/", request.url));
+  //   }
+  //   if (!isAuthorized && !request.nextUrl.pathname.startsWith("/login")) {
+  //     return Response.redirect(new URL("/login", request.url));
+  //   }
+  // } catch (error) {
+  //   console.error("Error during authentication check:", error);
+  //   return Response.redirect(new URL("/login", request.url));
+  // }
 }
 
 export const config = {

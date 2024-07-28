@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRouter from "./routes/auth.route.js";
+import dataRouter from "./routes/data.route.js";
 
 dotenv.config();
 
@@ -34,5 +35,6 @@ try {
 }
 
 app.use("/api/auth", authRouter);
+app.use("/api", dataRouter);
 
 app.listen(PORT);

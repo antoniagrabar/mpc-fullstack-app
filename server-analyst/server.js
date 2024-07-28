@@ -3,7 +3,9 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import publicKeyRouter from "./routes/publicKey.route.js";
+import router from "./routes/data.route.js";
+import crypto from "crypto";
+import fs from "fs";
 
 dotenv.config();
 
@@ -17,9 +19,11 @@ app.use(
 
 app.use(express.json());
 
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5000"];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
@@ -33,6 +37,6 @@ try {
   console.log(error);
 }
 
-app.use("/api/", publicKeyRouter);
+app.use("/api", router);
 
 app.listen(PORT);

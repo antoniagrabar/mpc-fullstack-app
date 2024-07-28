@@ -15,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { setAuthentication } from "@/utils/auth";
+import { setAuthentication } from "../../utils/auth";
 import { useState } from "react";
+import router from "next/router";
 
 const formSchema = z.object({
   email: z.string().email({

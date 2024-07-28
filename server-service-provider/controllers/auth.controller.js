@@ -86,6 +86,7 @@ export const loginController = async (req, res) => {
         res.status(200).json({
           message: "Login successful",
           token,
+          userId: dbUser._id,
         });
       } else {
         res
@@ -107,12 +108,12 @@ export const checkAuthController = (req, res) => {
   if (token) {
     try {
       const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      res.json({
+      res.status(200).json({
         auth: true,
         data: decode,
       });
     } catch (error) {
-      res.json({
+      res.status(500).json({
         auth: false,
         data: error.message,
       });
