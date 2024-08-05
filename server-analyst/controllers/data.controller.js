@@ -1,6 +1,8 @@
 import fs from "fs";
 import EncryptedMask from "../models/encryptedMask.model.js";
 import { getAggregateMask } from "../utils/helpers.js";
+import AggregateData from "../models/AggregateData.model.js";
+import { months, attackTypes } from "../utils/constants.js";
 
 export const publicKeyController = (req, res) => {
   try {
@@ -28,10 +30,14 @@ export const maskedAggregateDataController = async (req, res) => {
 
     // Subtract the sum of masks from each value in the aggregate data
     const aggregateData = maskedAggregateData.map((row) =>
-      row.map((value) => (value === 0 ? 0 : value - aggregateMask))
+      row.map((value) => value - aggregateMask)
     );
 
-    console.log("aggregate data", aggregateData);
+    await AggregateData.findOneAndUpdate(
+      {},
+      { data: aggregateData },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     res.status(200).json({ message: "Processed aggregate data!" });
   } catch (error) {
@@ -44,8 +50,6 @@ export const encryptedMaskController = async (req, res) => {
   try {
     const { userId, encryptedMask } = req.body;
 
-    // Store the encrypted mask in the database
-    // If a record for the user already exists, replace it
     await EncryptedMask.findOneAndUpdate(
       { userId },
       { encryptedMask },
@@ -56,5 +60,71 @@ export const encryptedMaskController = async (req, res) => {
   } catch (error) {
     console.error("Error saving the encrypted mask:", error);
     res.status(500).json({ error: "Error saving the encrypted mask." });
+  }
+};
+
+export const statisticsController = async (req, res) => {
+  try {
+    const aggregateDataEntry = await AggregateData.findOne({});
+
+    if (!aggregateDataEntry) {
+      return res.status(404).json({ error: "No aggregate data found" });
+    }
+
+    const aggregateData = aggregateDataEntry.data;
+    const numberOfCompanies = await EncryptedMask.countDocuments();
+
+    if (numberOfCompanies < 2) {
+      return res
+        .status(400)
+        .json({ error: "Not enough data entries for analysis." });
+    }
+
+    let totalAttacks = 0;
+    let monthlyAttacks = new Array(12).fill(0);
+    let attackTypeCounts = new Array(10).fill(0);
+
+    aggregateData.forEach((attackTypeArray, attackTypeIndex) => {
+      attackTypeArray.forEach((monthlyCount, monthIndex) => {
+        totalAttacks += monthlyCount;
+        monthlyAttacks[monthIndex] += monthlyCount;
+        attackTypeCounts[attackTypeIndex] += monthlyCount;
+      });
+    });
+
+    const maxAttackTypeCount = Math.max(...attackTypeCounts);
+    const minAttackTypeCount = Math.min(...attackTypeCounts);
+
+    const mostCommonAttack = attackTypes.filter(
+      (_, index) => attackTypeCounts[index] === maxAttackTypeCount
+    );
+    const leastCommonAttack = attackTypes.filter(
+      (_, index) => attackTypeCounts[index] === minAttackTypeCount
+    );
+
+    const formattedAggregateData = months.map((month, index) => {
+      const monthData = { month };
+      attackTypes.forEach((attackType, attackIndex) => {
+        monthData[attackType] = aggregateData[attackIndex][index];
+      });
+      return monthData;
+    });
+
+    const response = {
+      companies: numberOfCompanies,
+      totalAttacks,
+      mostCommonAttack:
+        mostCommonAttack.length === 1 ? mostCommonAttack[0] : mostCommonAttack,
+      leastCommonAttack:
+        leastCommonAttack.length === 1
+          ? leastCommonAttack[0]
+          : leastCommonAttack,
+      aggregateData: formattedAggregateData,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error generating statistics." });
   }
 };

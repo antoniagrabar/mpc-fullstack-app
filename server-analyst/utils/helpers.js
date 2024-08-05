@@ -2,7 +2,7 @@ import crypto from "crypto";
 import EncryptedMask from "../models/encryptedMask.model.js";
 import fs from "fs";
 
-export const decryptMask = (encryptedMask) => {
+const decryptMask = (encryptedMask) => {
   const privateKey = fs.readFileSync(
     "/Users/antonia/Documents/projects/mpc-fullstack-app/server-analyst/keypair.pem",
     "utf8"
@@ -20,7 +20,6 @@ export const decryptMask = (encryptedMask) => {
 
 export const getAggregateMask = async () => {
   try {
-    // Fetch all encrypted masks from the database
     const encryptedMasks = await EncryptedMask.find({}).select(
       "encryptedMask -_id"
     );

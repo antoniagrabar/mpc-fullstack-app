@@ -4,8 +4,6 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import router from "./routes/data.route.js";
-import crypto from "crypto";
-import fs from "fs";
 
 dotenv.config();
 

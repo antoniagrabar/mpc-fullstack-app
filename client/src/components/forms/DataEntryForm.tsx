@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { attacks, months } from "@/constants";
+import { attackLabels, months } from "@/constants";
 import { useEffect, useState } from "react";
 import { encryptMask, generateRandomMask } from "@/utils/helpers";
 
@@ -146,11 +146,11 @@ const DataEntryForm = () => {
       <div>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-            <div className="grid grid-cols-13 gap-2 mb-14">
+            <div className="grid grid-cols-13 gap-2 mb-8">
               {watch("data").map((row, rowIndex) => (
                 <div key={rowIndex} className="flex">
                   <div className="flex pr-2 flex-none w-[110px] body-regular pt-2">
-                    {attacks[rowIndex]}
+                    {attackLabels[rowIndex]}
                   </div>
                   {row.map((_, cellIndex) => (
                     <FormField

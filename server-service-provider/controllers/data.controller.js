@@ -1,7 +1,7 @@
 import MaskedData from "../models/MaskedData.js";
 import fetch from "node-fetch";
 
-const sendMaskedAggregateDataToServer = async () => {
+const sendMaskedAggregateDataToAnalyst = async () => {
   try {
     const allMaskedData = await MaskedData.find({}, "data");
 
@@ -59,5 +59,5 @@ export const maskedDataController = async (req, res) => {
     res.status(500).json({ error: "An error occurred while saving the data" });
   }
 
-  await sendMaskedAggregateDataToServer();
+  await sendMaskedAggregateDataToAnalyst();
 };

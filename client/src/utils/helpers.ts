@@ -1,4 +1,6 @@
 import crypto from "crypto";
+import { AttackType } from "@/types";
+import { labelMapping } from "@/constants";
 
 export const generateRandomMask = () => {
   const min = -1_000_000;
@@ -14,5 +16,15 @@ export const encryptMask = (mask: number, publicKey: any) => {
   } catch (error) {
     console.error("Error encrypting mask:", error);
     throw new Error("Encryption failed");
+  }
+};
+
+export const createAttackLabel = (
+  attack: keyof AttackType | (keyof AttackType)[]
+): string | string[] => {
+  if (Array.isArray(attack)) {
+    return attack.map((a) => labelMapping[a] || a);
+  } else {
+    return labelMapping[attack] || attack;
   }
 };
