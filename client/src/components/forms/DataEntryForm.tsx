@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { attackLabels, months } from "@/constants";
 import { useEffect, useState } from "react";
 import { encryptMask, generateRandomMask } from "@/utils/helpers";
+import toast from "react-hot-toast";
 
 const cellSchema = z.preprocess(
   (val) => Number(val),
@@ -128,6 +129,8 @@ const DataEntryForm = () => {
           },
         }
       );
+
+      toast.success("Data entry submitted!");
     } catch (error) {
       console.error(error);
     }
