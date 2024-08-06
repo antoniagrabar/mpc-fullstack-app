@@ -1,21 +1,21 @@
 import { AttackType, SidebarLink } from "../types/index";
-import { createAttackLabel } from "@/utils/helpers";
 import { ChartConfig } from "@/components/ui/chart";
+import Endpoints from "./endpoints";
 
 export const sidebarLinks: SidebarLink[] = [
   {
     icon: "home",
-    route: "/",
+    route: Endpoints.HOME,
     label: "Home",
   },
   {
     icon: "edit",
-    route: "/data-entry",
+    route: Endpoints.DATAENTRY,
     label: "Data Entry",
   },
   {
     icon: "lineChart",
-    route: "/statistics",
+    route: Endpoints.STATISTICS,
     label: "Statistics",
   },
 ];

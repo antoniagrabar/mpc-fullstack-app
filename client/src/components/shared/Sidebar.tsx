@@ -54,14 +54,12 @@ const Sidebar = () => {
           );
         })}
       </div>
-      {/* <Link href="/logout"> */}
       <Button
         onClick={async () => signOut()}
         className="w-full rounded-lg px-4 py-3 shadow-none text-theme bg-gray100 hover:bg-gray200 focus:bg-gray200 cursor-pointer"
       >
         Log Out
       </Button>
-      {/* </Link> */}
     </section>
   );
 };

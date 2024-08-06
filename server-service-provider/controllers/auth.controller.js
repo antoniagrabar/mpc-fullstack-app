@@ -83,15 +83,13 @@ export const loginController = async (req, res) => {
           { expiresIn: "1d" }
         );
 
-        console.log("jwttoken", jwtToken);
-
         res.status(200).json({
           message: "Login successful",
           token: jwtToken,
         });
       } else {
         res
-          .status(404)
+          .status(401)
           .json({ message: "User not found or password incorrect." });
       }
     } else {

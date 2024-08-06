@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 interface MyUser {
   email: string;
   name: string;
+  id: string;
 }
 
 declare module "next-auth" {
@@ -46,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         token.user = {
           email: decodedPayload.email,
           name: decodedPayload.name,
+          id: decodedPayload._id,
         };
       }
 
@@ -74,6 +76,7 @@ export const authOptions: NextAuthOptions = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(data: any) {
         const { email, password } = data;
+
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/login`,
           {
@@ -90,6 +93,7 @@ export const authOptions: NextAuthOptions = {
         if (res.ok && user) {
           return user;
         }
+
         return null;
       },
       credentials: {},

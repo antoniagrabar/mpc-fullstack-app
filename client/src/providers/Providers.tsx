@@ -17,7 +17,6 @@ export default function Provider({
         <Toaster position="top-right" />
         {children}
       </SessionProvider>
-      <Toaster />
     </>
   );
 }

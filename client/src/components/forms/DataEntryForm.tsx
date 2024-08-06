@@ -16,6 +16,7 @@ import { attackLabels, months } from "@/constants";
 import { useEffect, useState } from "react";
 import { encryptMask, generateRandomMask } from "@/utils/helpers";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const cellSchema = z.preprocess(
   (val) => Number(val),
@@ -41,6 +42,8 @@ const formSchema = z.object({
 
 const DataEntryForm = () => {
   const [publicKey, setPublicKey] = useState<string>("");
+
+  const session = useSession();
 
   useEffect(() => {
     const fetchPublicKey = async () => {
@@ -88,51 +91,50 @@ const DataEntryForm = () => {
       row.map((cell: number) => cell + mask)
     );
 
-    try {
-      const dataObject = {
-        userId: "a",
-        data: maskedValues,
-      };
+    if (session.data) {
+      try {
+        const dataObject = {
+          userId: session.data.user.id,
+          data: maskedValues,
+        };
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/masked-data`,
-        {
-          method: "POST",
-          body: JSON.stringify(dataObject),
-          headers: {
-            "Content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/masked-data`,
+          {
+            method: "POST",
+            body: JSON.stringify(dataObject),
+            headers: {
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+
+        const json = await response.json();
+        if (!response.ok) {
+          throw new Error(json.message);
+        } else {
+          console.log("Data submitted successfully!");
         }
-      );
 
-      const json = await response.json();
-      if (!response.ok) {
-        throw new Error(json.message);
-      } else {
-        console.log("Data submitted successfully!");
-      }
+        const dataObjectAnalyst = {
+          userId: session.data.user.id,
+          encryptedMask: encryptedMask,
+        };
 
-      const dataObjectAnalyst = {
-        userId: "a",
-        encryptedMask: encryptedMask,
-      };
-
-      const analystResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_ANALYST_URL}/encrypted-mask`,
-        {
+        await fetch(`${process.env.NEXT_PUBLIC_ANALYST_URL}/encrypted-mask`, {
           method: "POST",
           body: JSON.stringify(dataObjectAnalyst),
           headers: {
             "Content-type": "application/json",
             "Access-Control-Allow-Origin": "*",
           },
-        }
-      );
+        });
 
-      toast.success("Data entry submitted!");
-    } catch (error) {
-      console.error(error);
+        toast.success("Data entry submitted!");
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -142,7 +144,9 @@ const DataEntryForm = () => {
         <span className="body-semibold w-[150px]">Attack</span>
         <div className="flex w-full place-content-between pr-6">
           {months.map((month: string) => (
-            <span className="body-semibold">{month}</span>
+            <span className="body-semibold" key={month}>
+              {month}
+            </span>
           ))}
         </div>
       </div>
