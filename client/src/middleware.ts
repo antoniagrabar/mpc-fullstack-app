@@ -1,10 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-
-const AUTHORIZED_PATHS = ["/login", "/register"];
+import { AUTHORIZED_PATHS, ANALYST_RESTRICTED_PATHS } from "./constants";
 
 export async function middleware(req: NextRequest) {
-  // Extract the pathname from the request
   const { pathname } = req.nextUrl;
 
   // Allow requests to authorized paths
@@ -12,7 +10,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check the session status
+  // Get the user token and check its status
   const token = await getToken({ req });
 
   if (!token || token.status === "unauthenticated") {
@@ -21,7 +19,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Allow the request if the user is authenticated
+  // If the user is authenticated, check if the user is analyst
+  if (
+    token.user?.email === process.env.NEXT_PUBLIC_ANALYST_EMAIL &&
+    ANALYST_RESTRICTED_PATHS.includes(pathname)
+  ) {
+    const restrictedUrl = new URL("/statistics", req.nextUrl.origin); // Redirect to a default allowed path /statistics
+    return NextResponse.redirect(restrictedUrl);
+  }
+
+  // Allow the request if no conditions are met
   return NextResponse.next();
 }
 

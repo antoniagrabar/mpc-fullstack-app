@@ -2,6 +2,10 @@ import { AttackType, SidebarLink } from "../types/index";
 import { ChartConfig } from "@/components/ui/chart";
 import Endpoints from "./endpoints";
 
+export const AUTHORIZED_PATHS = ["/login", "/register"];
+
+export const ANALYST_RESTRICTED_PATHS = ["/", "/data-entry"];
+
 export const sidebarLinks: SidebarLink[] = [
   {
     icon: "home",

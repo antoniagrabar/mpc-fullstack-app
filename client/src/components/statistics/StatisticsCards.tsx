@@ -36,8 +36,6 @@ const StatisticsCards = () => {
     fetchStatistics();
   }, []);
 
-  console.log(statistics);
-
   const keypointCardContent = (index: number) => {
     if (statistics) {
       switch (index) {

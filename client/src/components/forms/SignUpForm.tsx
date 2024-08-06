@@ -61,7 +61,6 @@ const SignUpForm = ({ setSignUpSuccess }: any) => {
         throw new Error(json.message);
       } else {
         setSignUpSuccess(true);
-        console.log("Successful registration");
       }
     } catch (error) {
       console.log(error);
