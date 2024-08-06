@@ -17,17 +17,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import formSchema from "@/schemas/loginSchema";
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-});
-
-const SignInForm = () => {
+const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
@@ -105,4 +97,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default LoginForm;

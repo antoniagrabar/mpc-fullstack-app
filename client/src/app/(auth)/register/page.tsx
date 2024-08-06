@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SignUpForm from "@/components/forms/SignUpForm";
+import RegisterForm from "@/components/forms/RegisterForm";
 import SignUpSuccess from "@/components/auth/SignUpSuccess";
 
 export default function RegisterPage() {
@@ -13,7 +13,7 @@ export default function RegisterPage() {
         {signUpSuccess ? (
           <SignUpSuccess />
         ) : (
-          <SignUpForm setSignUpSuccess={setSignUpSuccess} />
+          <RegisterForm setSignUpSuccess={setSignUpSuccess} />
         )}
       </div>
     </div>
