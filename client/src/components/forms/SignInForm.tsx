@@ -14,10 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { setAuthentication } from "../../utils/auth";
 import { useState } from "react";
-import router from "next/router";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -30,7 +28,6 @@ const formSchema = z.object({
 
 const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -41,27 +38,10 @@ const SignInForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/login`,
-        {
-          method: "POST",
-          body: JSON.stringify(values),
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      );
-      const json = await response.json();
-      if (!response.ok) {
-        setErrorMessage(json.message);
-        throw new Error(json.message);
-      }
-      setAuthentication(json.token);
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
+    signIn("credentials", {
+      email: values.email as string,
+      password: values.password as string,
+    });
   }
 
   return (

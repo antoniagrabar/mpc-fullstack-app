@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Icon from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -53,11 +54,14 @@ const Sidebar = () => {
           );
         })}
       </div>
-      <Link href="/logout">
-        <Button className="w-full rounded-lg px-4 py-3 shadow-none text-theme bg-gray100 hover:bg-gray200 focus:bg-gray200 cursor-pointer">
-          Log Out
-        </Button>
-      </Link>
+      {/* <Link href="/logout"> */}
+      <Button
+        onClick={async () => signOut()}
+        className="w-full rounded-lg px-4 py-3 shadow-none text-theme bg-gray100 hover:bg-gray200 focus:bg-gray200 cursor-pointer"
+      >
+        Log Out
+      </Button>
+      {/* </Link> */}
     </section>
   );
 };

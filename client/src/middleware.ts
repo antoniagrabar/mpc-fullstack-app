@@ -1,59 +1,28 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-const isUserAuthorized = async (token: any) => {
-  const tokenObject = {
-    token: token,
-  };
+const AUTHORIZED_PATHS = ["/login", "/register"];
 
-  if (token) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVICE_PROVIDER_URL}/auth/checkAuth`,
-        {
-          method: "POST",
-          body: JSON.stringify(tokenObject),
-          headers: {
-            "Content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
+export async function middleware(req: NextRequest) {
+  // Extract the pathname from the request
+  const { pathname } = req.nextUrl;
 
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-      const json = await response.json();
-      return json;
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    console.log("There is no token.");
+  // Allow requests to authorized paths
+  if (AUTHORIZED_PATHS.includes(pathname)) {
+    return NextResponse.next();
   }
 
-  return false;
-};
+  // Check the session status
+  const token = await getToken({ req });
 
-export async function middleware(request: NextRequest) {
-  // try {
-  //   const token = request.cookies.get("token")?.value;
-  //   if (request.nextUrl.pathname === "/logout") {
-  //     const response = NextResponse.redirect(new URL("/login", request.url));
-  //     response.cookies.delete("token");
-  //     console.log("Response cookies: ", response.cookies.getAll());
-  //     return response;
-  //   }
-  //   const isAuthorized = await isUserAuthorized(token);
-  //   if (isAuthorized.auth && !request.nextUrl.pathname.startsWith("/")) {
-  //     return Response.redirect(new URL("/", request.url));
-  //   }
-  //   if (!isAuthorized && !request.nextUrl.pathname.startsWith("/login")) {
-  //     return Response.redirect(new URL("/login", request.url));
-  //   }
-  // } catch (error) {
-  //   console.error("Error during authentication check:", error);
-  //   return Response.redirect(new URL("/login", request.url));
-  // }
+  if (!token || token.status === "unauthenticated") {
+    // If the user is unauthenticated, redirect them to the login page
+    const loginUrl = new URL("/login", req.nextUrl.origin);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Allow the request if the user is authenticated
+  return NextResponse.next();
 }
 
 export const config = {

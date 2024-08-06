@@ -77,16 +77,17 @@ export const loginController = async (req, res) => {
       const match = await bcrypt.compare(password, dbUser.password);
 
       if (match) {
-        const token = jwt.sign(
+        const jwtToken = jwt.sign(
           { _id: dbUser._id, name: dbUser.name, email },
           process.env.JWT_SECRET_KEY,
           { expiresIn: "1d" }
         );
 
+        console.log("jwttoken", jwtToken);
+
         res.status(200).json({
           message: "Login successful",
-          token,
-          userId: dbUser._id,
+          token: jwtToken,
         });
       } else {
         res
@@ -99,29 +100,5 @@ export const loginController = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error logging in user" });
-  }
-};
-
-export const checkAuthController = (req, res) => {
-  const { token } = req.body;
-
-  if (token) {
-    try {
-      const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      res.status(200).json({
-        auth: true,
-        data: decode,
-      });
-    } catch (error) {
-      res.status(500).json({
-        auth: false,
-        data: error.message,
-      });
-    }
-  } else {
-    res.json({
-      auth: false,
-      data: "No token found in request",
-    });
   }
 };

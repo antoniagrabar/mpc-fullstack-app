@@ -1,7 +1,9 @@
+import Welcome from "@/components/home/Welcome";
+
 const Page = () => {
   return (
     <div>
-      <h2 className="h2-bold mb-8">Welcome!</h2>
+      <Welcome />
       <p className="text-gray300 paragraph-regular">
         Thank you for deciding to join this research, where we aim to find
         correlations between cyberattacks and time periods to enhance our
