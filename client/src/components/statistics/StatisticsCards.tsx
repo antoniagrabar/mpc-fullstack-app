@@ -6,6 +6,7 @@ import { keypointCardTitles } from "@/constants";
 import { Statistics } from "@/types";
 import { createAttackLabel } from "@/utils/helpers";
 import AggregateDataCard from "../cards/AggregateDataCard";
+import NotEnoughData from "./NotEnoughData";
 
 const StatisticsCards = () => {
   const [statistics, setStatistics] = useState<Statistics>();
@@ -69,7 +70,7 @@ const StatisticsCards = () => {
           </div>
         </>
       ) : (
-        <></>
+        <NotEnoughData />
       )}
     </>
   );
