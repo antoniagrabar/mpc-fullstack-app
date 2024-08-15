@@ -59,7 +59,7 @@ export const registerController = async (req, res) => {
         res.status(201).send();
       } catch (error) {
         console.log(error);
-        res.status(400).send();
+        res.status(400).json({ message: "Error creating the account." });
       }
     }
   } else {

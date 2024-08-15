@@ -16,13 +16,13 @@ const Sidebar = () => {
     session?.user?.email === process.env.NEXT_PUBLIC_ANALYST_EMAIL;
 
   return (
-    <section className="light-border sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-6 w-[266px]">
+    <section className="sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-6 lg:w-[266px]">
       <Image
         src="/assets/riteh_logo.png"
         alt="logo"
         width={0}
         height={0}
-        className="w-full mb-12"
+        className="w-full mb-12 max-lg:hidden"
         sizes="100vw"
       />
       {status === "authenticated" && (
@@ -56,7 +56,7 @@ const Sidebar = () => {
                 <p
                   className={`${
                     isActive ? "body-semibold text-white" : "body-medium"
-                  }`}
+                  } max-lg:hidden`}
                 >
                   {item.label}
                 </p>
@@ -67,9 +67,16 @@ const Sidebar = () => {
       )}
       <Button
         onClick={async () => signOut()}
-        className="w-full rounded-lg px-4 py-3 shadow-none text-white cursor-pointer"
+        className="w-full rounded-lg px-4 py-3 shadow-none text-white cursor-pointer max-lg:bg-white max-lg:hover:focus:gray100"
       >
-        Log Out
+        <Icon
+          name="logout"
+          fill="none"
+          width={24}
+          height={24}
+          className="lg:hidden"
+        />
+        <span className="max-lg:hidden">Log Out</span>
       </Button>
     </section>
   );

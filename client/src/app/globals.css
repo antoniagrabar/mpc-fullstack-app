@@ -137,18 +137,6 @@ body {
     @apply text-[14px] font-semibold leading-[18.2px];
   }
 
-  .small-regular {
-    @apply text-[12px] font-normal leading-[15.6px];
-  }
-
-  .small-medium {
-    @apply text-[12px] font-medium leading-[15.6px];
-  }
-
-  .small-semibold {
-    @apply text-[12px] font-semibold leading-[15.6px];
-  }
-
   .theme-gradient {
     background: linear-gradient(129deg, #336fd6 0%, #6d98e2 100%);
   }

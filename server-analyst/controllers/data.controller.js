@@ -68,7 +68,7 @@ export const statisticsController = async (req, res) => {
     const aggregateDataEntry = await AggregateData.findOne({});
 
     if (!aggregateDataEntry) {
-      return res.status(404).json({ error: "No aggregate data found" });
+      return res.status(404).json({ message: "No aggregate data found" });
     }
 
     const aggregateData = aggregateDataEntry.data;
@@ -77,7 +77,7 @@ export const statisticsController = async (req, res) => {
     if (numberOfCompanies < 2) {
       return res
         .status(400)
-        .json({ error: "Not enough data entries for analysis." });
+        .json({ message: "Not enough data entries for analysis." });
     }
 
     let totalAttacks = 0;
@@ -125,6 +125,6 @@ export const statisticsController = async (req, res) => {
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error generating statistics." });
+    res.status(500).json({ message: "Error generating statistics." });
   }
 };

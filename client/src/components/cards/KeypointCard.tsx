@@ -15,11 +15,9 @@ const KeypointCard = ({
       <CardContent>
         {Array.isArray(content) ? (
           content.map((item, index) => (
-            <>
-              <div key={index} className="h3-bold">
-                {item}
-              </div>
-            </>
+            <div key={index} className="h3-bold">
+              {item}
+            </div>
           ))
         ) : (
           <span className="h3-bold">{content}</span>

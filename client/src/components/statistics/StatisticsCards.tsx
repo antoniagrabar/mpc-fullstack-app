@@ -7,34 +7,48 @@ import { Statistics } from "@/types";
 import { createAttackLabel } from "@/utils/helpers";
 import AggregateDataCard from "../cards/AggregateDataCard";
 import NotEnoughData from "./NotEnoughData";
+import toast from "react-hot-toast";
 
 const StatisticsCards = () => {
   const [statistics, setStatistics] = useState<Statistics>();
+  const [notEnoughData, setNotEnoughData] = useState<boolean>(false);
+
+  const fetchStatistics = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_ANALYST_URL}/statistics`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          setNotEnoughData(true);
+        } else {
+          toast.error(responseData.message);
+        }
+      } else {
+        setStatistics(responseData);
+      }
+    } catch (error) {
+      console.error("Error getting statistics:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_ANALYST_URL}/statistics`,
-          {
-            method: "GET",
-            headers: {
-              "Content-type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        const responseData = await response.json();
-        setStatistics(responseData);
-      } catch (error) {
-        console.error("Error getting statistics:", error);
-      }
-    };
-
     fetchStatistics();
+
+    const error = console.error;
+    console.error = (...args: any) => {
+      if (/defaultProps/.test(args[0])) return;
+      error(...args);
+    };
   }, []);
 
   const keypointCardContent = (index: number) => {
@@ -69,8 +83,10 @@ const StatisticsCards = () => {
             <AggregateDataCard aggregateData={statistics?.aggregateData} />
           </div>
         </>
-      ) : (
+      ) : notEnoughData ? (
         <NotEnoughData />
+      ) : (
+        <></>
       )}
     </>
   );

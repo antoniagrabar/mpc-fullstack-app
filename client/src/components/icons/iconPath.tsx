@@ -36,6 +36,12 @@ export default function IconPath({ name }: { name: string }) {
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </>
       );
+    case "logout":
+      return (
+        <>
+          <path d="M16 17l5-5-5-5M19.8 12H9M10 3H4v18h6" />
+        </>
+      );
     default:
       return <></>;
   }

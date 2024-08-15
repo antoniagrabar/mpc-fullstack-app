@@ -20,34 +20,37 @@ import { useSession } from "next-auth/react";
 import formSchema from "@/schemas/dataEntrySchema";
 
 const DataEntryForm = () => {
-  const [publicKey, setPublicKey] = useState<string>("");
+  const [publicKey, setPublicKey] = useState<string>();
   const session = useSession();
 
-  useEffect(() => {
-    const fetchPublicKey = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_ANALYST_URL}/public-key`,
-          {
-            method: "GET",
-            headers: {
-              "Content-type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(response.statusText);
+  const fetchPublicKey = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_ANALYST_URL}/public-key`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
         }
-        const responseData = await response.json();
-        const fetchedPublicKey = responseData.publicKey;
-        setPublicKey(fetchedPublicKey);
-      } catch (error) {
-        console.error("Error fetching public key:", error);
-      }
-    };
+      );
 
-    fetchPublicKey();
+      const responseData = await response.json();
+      if (!response.ok) {
+        toast.error(responseData.message);
+      }
+      const fetchedPublicKey = responseData.publicKey;
+      setPublicKey(fetchedPublicKey);
+    } catch (error) {
+      console.log(error);
+      throw new Error("Cannot fetch public key.");
+    }
+  };
+
+  useEffect(() => {
+    if (!publicKey) {
+      fetchPublicKey();
+    }
   }, []);
 
   const form = useForm({
@@ -90,7 +93,7 @@ const DataEntryForm = () => {
 
         const json = await response.json();
         if (!response.ok) {
-          throw new Error(json.message);
+          toast.error(json.message);
         }
 
         const dataObjectAnalyst = {

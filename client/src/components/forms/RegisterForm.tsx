@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
 import formSchema from "@/schemas/registerSchema";
+import toast from "react-hot-toast";
 
 const RegisterForm = ({ setSignUpSuccess }: any) => {
   const [emailExistsMessage, setEmailExistsMessage] = useState<string>("");
@@ -44,12 +45,13 @@ const RegisterForm = ({ setSignUpSuccess }: any) => {
       const json = await response.json();
       if (!response.ok) {
         setEmailExistsMessage(json.message);
-        throw new Error(json.message);
+        toast.error(json.message);
       } else {
         setSignUpSuccess(true);
       }
     } catch (error) {
       console.log(error);
+      throw new Error("Registration error.");
     }
   }
 
