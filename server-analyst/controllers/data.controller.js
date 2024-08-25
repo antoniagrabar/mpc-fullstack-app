@@ -68,7 +68,7 @@ export const statisticsController = async (req, res) => {
     const aggregateDataEntry = await AggregateData.findOne({});
 
     if (!aggregateDataEntry) {
-      return res.status(404).json({ message: "No aggregate data found" });
+      return res.status(400).json({ message: "No aggregate data found" });
     }
 
     const aggregateData = aggregateDataEntry.data;

@@ -1,4 +1,5 @@
 import Welcome from "@/components/home/Welcome";
+import Link from "next/link";
 
 const Page = () => {
   return (
@@ -39,13 +40,22 @@ const Page = () => {
             is not stored in any database. It is processed in real-time and
             discarded immediately after computation.
           </p>
-          <p className="text-gray300 paragraph-regular">
+          <p className="text-gray300 paragraph-regular pb-3">
             <span className="paragraph-bold">Complete privacy: </span> Neither
             we nor any participating party can ever access your raw data. The
             computation is designed to aggregate results without revealing
             individual inputs.
           </p>
         </div>
+        <p className="text-gray300 paragraph-regular">
+          The source code of this application is publicly available
+          <a
+            href=" https://github.com/antoniagrabar/mpc-fullstack-app"
+            className="ml-1 paragraph-bold"
+          >
+            here.
+          </a>
+        </p>
       </div>
       <div className="pt-8">
         <h3 className="h3-semibold mb-3">How to Submit</h3>

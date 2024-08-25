@@ -29,7 +29,8 @@ const PORT = process.env.PORT || 5000;
 
 try {
   mongoose.connect(process.env.MONGO_URI);
-  console.log("connected to mongo from service provider");
+
+  console.log("Connected to MongoDB from service provider!");
 } catch (error) {
   console.log(error);
 }

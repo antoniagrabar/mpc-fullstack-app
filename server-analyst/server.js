@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 5001;
 
 try {
   mongoose.connect(process.env.MONGO_URI);
-  console.log("connected to mongo from analyst");
+  console.log("Connected to MongoDB from analyst!");
 } catch (error) {
   console.log(error);
 }
