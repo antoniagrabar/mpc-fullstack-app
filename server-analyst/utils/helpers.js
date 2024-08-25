@@ -25,6 +25,13 @@ export const encryptAggregateData = (data) => {
   const keyHex = process.env.SYMMETRIC_KEY;
   const key = Buffer.from(keyHex, "hex");
 
+  // Ensure key length is correct for AES-256
+  if (key.length !== 32) {
+    throw new Error(
+      "Invalid key length. Key must be 32 bytes long for AES-256."
+    );
+  }
+
   const dataBuffer = Buffer.from(JSON.stringify(data), "utf-8");
 
   const cipher = crypto.createCipheriv("aes-256-ecb", key, null);
@@ -37,6 +44,13 @@ export const encryptAggregateData = (data) => {
 export const decryptAggregateData = (data) => {
   const keyHex = process.env.SYMMETRIC_KEY;
   const key = Buffer.from(keyHex, "hex");
+
+  // Ensure key length is correct for AES-256
+  if (key.length !== 32) {
+    throw new Error(
+      "Invalid key length. Key must be 32 bytes long for AES-256."
+    );
+  }
 
   const encryptedBuffer = Buffer.from(data, "base64");
 
