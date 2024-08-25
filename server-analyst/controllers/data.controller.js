@@ -1,15 +1,23 @@
 import fs from "fs";
 import EncryptedMask from "../models/encryptedMask.model.js";
-import { getAggregateMask } from "../utils/helpers.js";
+import {
+  decryptAggregateData,
+  encryptAggregateData,
+  getAggregateMask,
+} from "../utils/helpers.js";
 import AggregateData from "../models/AggregateData.model.js";
 import { months, attackTypes } from "../utils/constants.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const publicKeyController = (req, res) => {
   try {
-    const publicKey = fs.readFileSync(
-      "/Users/antonia/Documents/projects/mpc-fullstack-app/server-analyst/publickey.crt",
-      "utf8"
-    );
+    const publicKeyPath = join(__dirname, "../publickey.crt");
+    const publicKey = fs.readFileSync(publicKeyPath, "utf8");
+
     res.send({ publicKey });
   } catch (err) {
     res.status(500).send("Error reading the public key file");
@@ -33,9 +41,11 @@ export const maskedAggregateDataController = async (req, res) => {
       row.map((value) => value - aggregateMask)
     );
 
+    const encryptedAggregateData = encryptAggregateData(aggregateData);
+
     await AggregateData.findOneAndUpdate(
       {},
-      { data: aggregateData },
+      { data: encryptedAggregateData },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
@@ -71,7 +81,9 @@ export const statisticsController = async (req, res) => {
       return res.status(400).json({ message: "No aggregate data found" });
     }
 
-    const aggregateData = aggregateDataEntry.data;
+    const data = aggregateDataEntry.data;
+    const aggregateData = decryptAggregateData(data);
+
     const numberOfCompanies = await EncryptedMask.countDocuments();
 
     if (numberOfCompanies < 3) {

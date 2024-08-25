@@ -3,13 +3,16 @@ import mongoose from "mongoose";
 const aggregateDataSchema = new mongoose.Schema(
   {
     data: {
-      type: [[Number]],
+      type: String,
       required: true,
     },
   },
-  { collection: "aggregate_data" }
+  { collection: "encrypted_aggregate_data" }
 );
 
-const AggregateData = mongoose.model("aggregate_data", aggregateDataSchema);
+const AggregateData = mongoose.model(
+  "encrypted_aggregate_data",
+  aggregateDataSchema
+);
 
 export default AggregateData;
