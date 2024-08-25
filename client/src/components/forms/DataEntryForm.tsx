@@ -65,6 +65,15 @@ const DataEntryForm = () => {
   const { control, watch, handleSubmit } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const allZeros = values.data.every((row) =>
+      row.every((cell) => cell === 0)
+    );
+
+    if (allZeros) {
+      toast.error("Cannot submit. Please enter the data.");
+      return;
+    }
+
     const mask = generateRandomMask();
     const encryptedMask = encryptMask(mask, publicKey);
 
