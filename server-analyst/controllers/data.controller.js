@@ -74,7 +74,7 @@ export const statisticsController = async (req, res) => {
     const aggregateData = aggregateDataEntry.data;
     const numberOfCompanies = await EncryptedMask.countDocuments();
 
-    if (numberOfCompanies < 2) {
+    if (numberOfCompanies < 3) {
       return res
         .status(400)
         .json({ message: "Not enough data entries for analysis." });

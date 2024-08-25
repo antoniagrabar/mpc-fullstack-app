@@ -6,8 +6,10 @@ const Page = () => {
       <h2 className="h2-bold mb-8">Statistics</h2>
       <p className="text-gray300 paragraph-regular mb-8">
         Here you can find the aggregate statistics of the submitted data. Data
-        analysis is performed when there is a minimum of two data entries from
-        different companies, ensuring the data privacy from the first company.
+        analysis is conducted only when there are at least three data entries
+        from different companies, guaranteeing that the data remains
+        confidential and cannot be inferred or deduced from any individual
+        source.
       </p>
       <StatisticsCards />
     </>
