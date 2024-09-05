@@ -83,6 +83,28 @@ const DataEntryForm = () => {
 
     if (session.data) {
       try {
+        const dataObjectAnalyst = {
+          userId: session.data.user.id,
+          encryptedMask: encryptedMask,
+        };
+
+        const analystResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_ANALYST_URL}/encrypted-mask`,
+          {
+            method: "POST",
+            body: JSON.stringify(dataObjectAnalyst),
+            headers: {
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+
+        const jsonAnalyst = await analystResponse.json();
+        if (!analystResponse.ok) {
+          toast.error(jsonAnalyst.message);
+        }
+
         const dataObject = {
           userId: session.data.user.id,
           data: maskedValues,
@@ -104,20 +126,6 @@ const DataEntryForm = () => {
         if (!response.ok) {
           toast.error(json.message);
         }
-
-        const dataObjectAnalyst = {
-          userId: session.data.user.id,
-          encryptedMask: encryptedMask,
-        };
-
-        await fetch(`${process.env.NEXT_PUBLIC_ANALYST_URL}/encrypted-mask`, {
-          method: "POST",
-          body: JSON.stringify(dataObjectAnalyst),
-          headers: {
-            "Content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        });
 
         toast.success("Data entry submitted!");
       } catch (error) {

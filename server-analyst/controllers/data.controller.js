@@ -75,6 +75,14 @@ export const encryptedMaskController = async (req, res) => {
 
 export const statisticsController = async (req, res) => {
   try {
+    const numberOfCompanies = await EncryptedMask.countDocuments();
+
+    if (numberOfCompanies < 3) {
+      return res
+        .status(400)
+        .json({ message: "Not enough data entries for analysis." });
+    }
+
     const aggregateDataEntry = await AggregateData.findOne({});
 
     if (!aggregateDataEntry) {
@@ -83,14 +91,6 @@ export const statisticsController = async (req, res) => {
 
     const data = aggregateDataEntry.data;
     const aggregateData = decryptAggregateData(data);
-
-    const numberOfCompanies = await EncryptedMask.countDocuments();
-
-    if (numberOfCompanies < 3) {
-      return res
-        .status(400)
-        .json({ message: "Not enough data entries for analysis." });
-    }
 
     let totalAttacks = 0;
     let monthlyAttacks = new Array(12).fill(0);

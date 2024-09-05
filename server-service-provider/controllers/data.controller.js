@@ -37,9 +37,11 @@ const sendMaskedAggregateDataToAnalyst = async () => {
       throw new Error(`Analyst responded with status: ${response.status}`);
     }
 
-    console.log("Masked aggregate data sent to Analyst successfully");
+    console.log("Masked aggregate data sent to analyst successfully");
+    return { success: true };
   } catch (error) {
-    console.error(error);
+    console.error("Error sending masked data to analyst:", error);
+    return { success: false, error: error.message };
   }
 };
 
@@ -50,14 +52,23 @@ export const maskedDataController = async (req, res) => {
     await MaskedData.findOneAndUpdate(
       { userId },
       { data },
-      { upsert: true, new: true, setDefaultsOnInsert: true } // Options: create new if not found
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    res.status(200).json({ message: "Data saved successfully" });
+    const analystResult = await sendMaskedAggregateDataToAnalyst();
+
+    if (analystResult.success) {
+      res
+        .status(200)
+        .json({ message: "Data saved and sent to analyst successfully" });
+    } else {
+      res.status(500).json({
+        error: "Data saved, but failed to send to analyst",
+        details: analystResult.error,
+      });
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error saving data:", error);
     res.status(500).json({ error: "An error occurred while saving the data" });
   }
-
-  await sendMaskedAggregateDataToAnalyst();
 };
